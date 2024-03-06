@@ -24,11 +24,11 @@ class AdminOrdersDataTable extends DataTable
     public function dataTable($query)
     {
         return datatables()->query($query)
-        ->addColumn('action',  function ($row) {
-            $actionBtn = '<a href="' . route('admin.orderDetails', $row->orderinfo_id) . '"  class="btn details btn-primary">Details</a>';
-            return $actionBtn;
-        })->rawColumns(['action'])
-        ->setRowId('id');
+            ->addColumn('action',  function ($row) {
+                $actionBtn = '<a href="' . route('admin.orderDetails', $row->orderinfo_id) . '"  class="btn details btn-primary">Details</a>';
+                return $actionBtn;
+            })->rawColumns(['action'])
+            ->setRowId('id');
     }
 
     /**
@@ -39,11 +39,11 @@ class AdminOrdersDataTable extends DataTable
      */
     public function query()
     {
-        $orders = DB::table('customer as c')->join('orderinfo as o','o.customer_id', '=', 'c.customer_id')
-        ->join('orderline as ol','o.orderinfo_id', '=', 'ol.orderinfo_id')
-        ->join('item as i','ol.item_id', '=', 'i.item_id')
-        ->select('o.orderinfo_id','c.fname', 'c.lname', 'c.addressline', 'o.date_placed', 'o.status', DB::raw("SUM(ol.quantity * i.sell_price) as total"))
-        ->groupBy('o.orderinfo_id', 'o.date_placed','o.orderinfo_id','c.fname', 'c.lname', 'c.addressline', 'o.status');
+        $orders = DB::table('customer as c')->join('orderinfo as o', 'o.customer_id', '=', 'c.customer_id')
+            ->join('orderline as ol', 'o.orderinfo_id', '=', 'ol.orderinfo_id')
+            ->join('item as i', 'ol.item_id', '=', 'i.item_id')
+            ->select('o.orderinfo_id', 'c.fname', 'c.lname', 'c.addressline', 'o.date_placed', 'o.status', DB::raw("SUM(ol.quantity * i.sell_price) as total"))
+            ->groupBy('o.orderinfo_id', 'o.date_placed', 'o.orderinfo_id', 'c.fname', 'c.lname', 'c.addressline', 'o.status');
         // ->get();
         // dd($orders);
         return $orders;
@@ -57,16 +57,16 @@ class AdminOrdersDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('adminorders-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    // ->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->parameters([
-                        'dom'          => 'Blfrtip',
-                        'buttons'      => ['export', 'print', 'reset', 'reload'],
-                    ]);
+            ->setTableId('adminorders-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            // ->dom('Bfrtip')
+            ->orderBy(1)
+            ->selectStyleSingle()
+            ->parameters([
+                'dom' => 'Blfrtip',
+                'buttons' => ['export', 'print', 'reset', 'reload'],
+            ]);
     }
 
     /**
@@ -78,18 +78,24 @@ class AdminOrdersDataTable extends DataTable
     {
         return [
             Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
-            Column::make('orderinfo_id'),
-            Column::make('fname')->title('last name'),
-            Column::make('lname'),
-            Column::make('addressline'),
-            Column::make('date_placed'),
-            Column::make('status'),
-            Column::make('total')
-            
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center'),
+            // Column::make('orderinfo_id'),
+            ['data' => 'orderinfo_id', 'name' => 'o.orderinfo_id', 'title' => 'order id'],
+            ['data' => 'lname', 'name' => 'c.lname', 'title' => 'last name'],
+            ['data' => 'fname', 'name' => 'c.fname', 'title' => 'first Name'],
+            ['data' => 'addressline', 'name' => 'c.addressline', 'title' => 'address'],
+            ['data' => 'date_placed', 'name' => 'o.date_placed', 'title' => 'date ordered'],
+            ['data' => 'status', 'name' => 'o.status', 'title' => 'status'],
+
+            // Column::make('c.fname')->title('first name'),
+            // Column::make('customer.addressline'),
+            // Column::make('customer.date_placed'),
+            // Column::make('orderinfo.status'),
+            Column::make('total')->searchable(false)
+
         ];
     }
 

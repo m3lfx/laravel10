@@ -38,9 +38,7 @@ Route::prefix('admin')->group(function () {
     
     Route::get('/orders/{id}',[OrderController::class,'processOrder'])->name('admin.orderDetails');
     Route::post('/order/{id}', [OrderController::class, 'orderUpdate'])->name('admin.orderUpdate');
-   
-    
-});
+   });
 Route::get('/', function () {
     return view('welcome');
 });
