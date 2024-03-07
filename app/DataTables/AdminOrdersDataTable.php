@@ -25,8 +25,9 @@ class AdminOrdersDataTable extends DataTable
     {
         return datatables()->query($query)
             ->addColumn('action',  function ($row) {
-                $actionBtn = '<a href="' . route('admin.orderDetails', $row->orderinfo_id) . '"  class="btn details btn-primary">Details</a>';
-                return $actionBtn;
+                dump($row);
+                // $actionBtn = '<a href="' . route('admin.orderDetails', $row->orderinfo_id) . '"  class="btn details btn-primary">Details</a>';
+                // return $actionBtn;
             })->rawColumns(['action'])
             ->setRowId('id');
     }

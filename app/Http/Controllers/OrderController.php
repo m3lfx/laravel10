@@ -15,7 +15,7 @@ class OrderController extends Controller
     {
         $customer = DB::table('customer as c')->join('orderinfo as o', 'o.customer_id', '=', 'c.customer_id')
             ->where('o.orderinfo_id', $id)
-            ->select('c.addressline', 'c.phone', 'o.orderinfo_id',  'o.status', 'o.date_placed', 'o.status')
+            ->select(DB::raw("CONCAT(c.lname, ' ', c.fname) as name"),'c.addressline', 'c.phone', 'o.orderinfo_id',  'o.status', 'o.date_placed', 'o.status')
             ->first();
         // dd($customer);
         $orders = DB::table('customer as c')->join('orderinfo as o', 'o.customer_id', '=', 'c.customer_id')
